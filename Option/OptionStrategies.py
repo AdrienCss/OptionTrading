@@ -1,8 +1,9 @@
 import numpy as np
-from Option import Option
-import matplotlib as plt
-
-
+from Option.Option import  Option ,Stock
+import matplotlib.pyplot as plt
+from Enum.BuySellSide import BuySellSide
+from Enum.OptionType import OpionType
+from typing import Union
 
 class OptionStrategies:
     """
@@ -15,51 +16,55 @@ class OptionStrategies:
         self.payoffs = np.zeros_like(self.STs)
         self.instruments = []
 
-    def add_Option(self ,  option : Option , buySell ,  option_number = 1) -> None:
+    def add_Option(self ,  option : Option , buySell:BuySellSide ,  option_number = 1) -> None:
 
-        for nb in option_number:
+        for nb in range(1 , option_number+1):
             self.instruments.append(option)
 
         self.payoffs = self.payoffs  + self._payoff(option,buySell,option_number)
 
         print(f"{str(option_number)} option(s) added ")
 
-    def add_deltaOne(self, stockPrice, buySell, stock_number=1) -> None:
+    def add_deltaOne(self, stock:Stock, buySell:BuySellSide, stock_number=1) -> None:
 
-        for nb in stock_number:
-            self.instruments.append(stockPrice) ## add later stockPrice
+        for nb in range(1 , stock_number+1):
+            self.instruments.append(stock) ## add later stockPrice
 
-
-        # to implement in private method
-        if(buySell==1 ):
-            payoff = np.array([ S - stockPrice  for S in self.STs])
-        if (buySell == -1):
-            payoff = np.array([ stockPrice - S for S in self.STs])
-
-
-        self.payoffs = self.payoffs + payoff
+        self.payoffs = self.payoffs  + self._payoff(stock,buySell,stock_number)
 
         print(f"{str(stock_number)} option(s) added ")
 
-    def _payoff(self , option : Option , buySell , option_number):
+    def _payoff(self , instr :Union[Option , Stock]  , side:BuySellSide , number):
 
-        K = option.K
+        payoff= None
+        if(type(instr) == Option):
+            option = instr
+            K = option.K
+            if side == BuySellSide.BUY:
+                if option.type ==OpionType.CALL:
+                    payoff = np.array([max(S - K, 0) - option.price for S in self.STs]) * number
+                elif option.type == OpionType.PUT:
+                    payoff = np.array([max(K - S, 0) - option.price for S in self.STs]) * number
 
-        long_put = np.array([max(K- S, 0) - option.price for S in self.STs]) * option_number
-        short_put = np.array([-max(K-S, 0) - option.price for S in self.STs]) * option_number
+            elif side == BuySellSide.SELL:
+                if option.type == OpionType.CALL:
+                    payoff = np.array([- (max(S - K, 0) - option.price )for S in self.STs]) * number
+                elif option.type == OpionType.PUT:
+                    payoff = np.array([-(max(K - S, 0) - option.price )for S in self.STs]) * number
 
-        short_call = np.array([max(S - K, 0) - option.price for S in self.STs]) * option_number
-        long_call = np.array([max(S - K, 0) - option.price for S in self.STs]) * option_number
-
-
+        elif (type(instr) == Stock):
+            stock = instr
+            if side == BuySellSide.BUY:
+                payoff = np.array([S - stock.price for S in self.STs]) * number
+            elif side == BuySellSide.SELL:
+                payoff = np.array([ stock.price -S for S in self.STs]) * number
+        return payoff
 
     def plot(self, **params):
         plt.plot(self.STs, self.payoffs, **params)
         plt.title(f"Payoff Diagram for {self.name}")
-        plt.fill_between(self.STs, self.payoffs,
-                         where=(self.payoffs > 0), facecolor='g', alpha=0.4)
-        plt.fill_between(self.STs, self.payoffs,
-                         where=(self.payoffs < 0), facecolor='r', alpha=0.4)
+        plt.fill_between(self.STs, self.payoffs,where=(self.payoffs > 0), facecolor='g', alpha=0.4)
+        plt.fill_between(self.STs, self.payoffs,where=(self.payoffs < 0), facecolor='r', alpha=0.4)
 
         plt.xlabel(r'$S_T$')
         plt.ylabel('Profit in $')

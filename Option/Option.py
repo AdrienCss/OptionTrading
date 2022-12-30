@@ -1,8 +1,11 @@
+from Enum import OptionType
 
 class Option:
-    def __init__(self, type, K, price, buy):
+    def __init__(self, type : OptionType, K, price):
         self.type = type
         self.K = K
         self.price = price
-        self.buy = buy
 
+class Stock:
+    def __init__(self , price ):
+        self.price= price
