@@ -3,6 +3,7 @@ from Option.Option import  Option ,Stock
 import matplotlib.pyplot as plt
 from Enum.BuySellSide import BuySellSide
 from Enum.OptionType import OpionType
+from BlackAndScholes import Greeks
 from typing import Union
 
 class OptionStrategies:
@@ -12,14 +13,22 @@ class OptionStrategies:
     def __init__(self, name, St):
         self.name = name
         self.St = St
-        self.STs = np.arange(0, St * 2, 1)
+        self.STs = np.arange(1, St * 2, 1)
         self.payoffs = np.zeros_like(self.STs)
         self.instruments = []
+        self.side = []
+
+        self.gamma=np.zeros_like(self.STs)
+        self.delta=np.zeros_like(self.STs)
+        self.theta=np.zeros_like(self.STs)
+        self.vega=np.zeros_like(self.STs)
+
 
     def add_Option(self ,  option : Option , buySell:BuySellSide ,  option_number = 1) -> None:
 
         for nb in range(1 , option_number+1):
             self.instruments.append(option)
+            self.side.append(buySell.value)
 
         self.payoffs = self.payoffs  + self._payoff(option,buySell,option_number)
 
@@ -88,3 +97,20 @@ class OptionStrategies:
                 c - + o.price
 
         print(f"Cost of entering position ${c}")
+
+    def compute_greek_profile(self , T, r, sigma ):
+
+        instr_side =list(zip(self.side,self.instruments))
+
+        for side , instr in instr_side:
+            self.delta =self.delta + side * Greeks.Delta(self.STs ,instr.K ,T , r , sigma ,  instr.type)
+            self.gamma = self.gamma + side * Greeks.Gamma(self.STs ,instr.K ,T , r , sigma)
+            self.vega = self.vega + side * Greeks.Vega(self.STs ,instr.K ,T , r , sigma )
+            self.theta = self.theta + side * Greeks.Theta(self.STs ,instr.K ,T , r , sigma ,  instr.type)
+
+    def plotGreek(self,greekStr,  **params):
+        greek= getattr(self, greekStr)
+        plt.plot(self.STs, greek, **params)
+        plt.title(f"{greekStr} Profile")
+        plt.xlabel(r'$S_T$')
+        plt.show()
