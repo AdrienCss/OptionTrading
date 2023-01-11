@@ -3,6 +3,12 @@ from Option.OptionStrategies import OptionStrategies
 from Option.Option import Option , Stock
 from Enum.OptionType import OpionType
 from Enum.BuySellSide import BuySellSide
+from DataRequest import  y_finane_option_data
+# Requesting data
+
+googDf = y_finane_option_data.get_option_data('GOOGL')
+
+
 
 
 #Underlying pricen quote
@@ -27,3 +33,7 @@ strategy.plotGreek(greekStr='gamma')
 strategy.plotGreek(greekStr='theta')
 strategy.plotGreek(greekStr='delta')
 strategy.plotGreek(greekStr='vega')
+
+
+
+
