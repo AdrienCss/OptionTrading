@@ -1,43 +1,48 @@
 import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+from DataRequest import y_finane_option_data , y_finane_stock_data
+from BlackAndScholes.BSPricing import BS_PUT , BS_CALL
+from scipy.optimize import minimize_scalar
 
 
-class ImpliedVolatility:
 
-    def __init__(self, S, K, T, r) -> None:
-        self.S = S
-        self.K = K
-        self.T = T
-        self.r = r
+df_options = y_finane_option_data.get_option_data('GOOGL')
+last_price = y_finane_stock_data.get_stock_price('GOOGL').tail(1)['Adj Close']
+df_options['Underliying_LastPrice'] = last_price.values[0]
 
-    def iterative_way(self) -> float:
+def compute_theorical_IV(opt_value, S, K, T, r, type_='CALL' ):
+    def call_obj(sigma):
+        return abs(BS_CALL(S, K, T, r, sigma) - opt_value)
 
-        volatility_candidates = np.arange(0.01, 4, 0.0001)
-        price_differences = np.zeros_like(volatility_candidates)
+    def put_obj(sigma):
+        return abs(BS_PUT(S, K, T, r, sigma) - opt_value)
 
-        for i in range(len(volatility_candidates)):
-            candidate = volatility_candidates[i]
-            #    price_differences[i] = abs(observed_price - BS_CALL(self.S, self.K, self.T, self.r, candidate))
-            idx = np.argmin(abs(price_differences))
-            impliedVolatility = volatility_candidates[idx]
-            return impliedVolatility
+    if type_ == 'CALL':
+        res = minimize_scalar(call_obj, bounds=(0.01, 15), method='bounded')
+        return res.x
+    elif type_ == 'PUT':
+        res = minimize_scalar(put_obj, bounds=(0.01, 15),
+                              method='bounded')
+        return res.x
+    else:
+        raise ValueError("type_ must be 'put' or 'call'")
 
-  #  def newton_raphson_algorithm(self) -> float:
 
-        #     sigma = 0.3
+def plot_ImpliedVolatility(option_df : pd.DataFrame , type,minDay , maxDay):
+    df_optionsCall = option_df[option_df['Type'] == type]
+    df_optionsCall = df_optionsCall[(option_df['T_days'] > minDay) & (option_df['T_days'] < maxDay)]
 
-            #   for i in range(max_iterations):
 
-            ### calculate difference between blackscholes price and market price with
-            ### iteratively updated volality estimate
-            #        diff = black_scholes_call(S, K, T, r, sigma) - C
+    grouped_df = df_optionsCall.groupby('T_days')
 
-            ###break if difference is less than specified tolerance level
-            #      if abs(diff) < tol:
-            #         print(f'found on {i}th iteration')
-            #        print(f'difference is equal to {diff}')
-            #          break
+    fig, ax = plt.subplots()
 
-            #     ### use newton rapshon to update the estimate
-        #     sigma = sigma - diff / vega(S, K, T, r, sigma)
+    for key, group in grouped_df:
+        ax.plot(group['strike'], group['impliedVolatility'], label=key)
 
-#   return sigma
+    ax.legend()
+    ax.set_xlabel('Strike')
+    ax.set_ylabel('ImpliedVolatility')
+    plt.title(f'{type} Options Volatility skew at different maturities (days) ')
+    plt.show()

@@ -43,7 +43,7 @@ def Rho(S, K, T, r, sigma , type:OpionType) -> float:
     elif type == OpionType.PUT:
         return -K * T * np.exp(-r * T) * N(-d2(S, K, T, r, sigma))
 
-
+#Example
 S = 100
 K = 100
 T = 1
