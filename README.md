@@ -34,10 +34,20 @@ source file : mainOptionStrategies.py
 
 # **Implied Volatility Calculation and Plotting for Options**
 
+=> Ploting observed implied volatility of real option's quotes.
+=> Computing implied volatility using Newton-Raphson Model.
+=> ploting skew/smile on short and long maturites ( short/long Smile)
+
+
+
+
 source file : mainImpliedVolatility.py
 
 # **Simulating heston Volatility**
+
 The basic idea behind the Heston model is that the volatility of an asset's price is not constant over time, but rather follows a stochastic process. The model describes the dynamics of the asset's price and volatility using two state variables: the current price of the asset and its current volatility. The model then uses a set of parameters to describe how these state variables change over time.
+
+
 
 source file : mainHestonSimulation.py
 
