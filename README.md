@@ -38,15 +38,24 @@ stockPrices_ = y_finane_stock_data.get_stock_price(ticker)
 
 Click here to access to dataFolder scprit [Data Request folder](https://github.com/AdrienCss/OptionTrading/blob/main/DataRequest)
 
+Example of output with TLSA: 
+
+![](Images/dataFrame_TSLA.png)
+
 # **Creating Option trading stategies**
 
-In this script, we will construct a variety of strategies utilizing fictitious optional data.
+In this script, we will construct a variety of strategies using real optional data.
 We will establish  "Option"& "Stocks" data type and devise distinct strategies from it. 
 Additionally, we will plot the corresponding Payoff profiles for these strategies. We will have the capability to display the Greek profiles of these strategies, projected over a range of underlying prices. This will allow us to analyze and evaluate the potential outcomes and risks associated with each strategies.
 
 -Call (BULL) Spread / Put (Bear) Spread
 
+![](Images/putSpread.png)
+![](Images/callSpread.png)
 -Butterflies , Straddle , Strangle
+
+
+
 
 -Synthetic forward
 

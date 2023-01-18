@@ -75,6 +75,7 @@ class OptionStrategies:
         plt.fill_between(self.STs, self.payoffs,where=(self.payoffs > 0), facecolor='g', alpha=0.4)
         plt.fill_between(self.STs, self.payoffs,where=(self.payoffs < 0), facecolor='r', alpha=0.4)
 
+        plt.legend("Hey!")
         plt.xlabel(r'$S_T$')
         plt.ylabel('Profit in $')
         plt.show()
