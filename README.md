@@ -16,7 +16,7 @@ The initial step in this code utilizes the yahoofinance API to access financial 
 
 During all the analysis of Read.me we will use as symbol *TSLA*
 
-# **Creating Option trading stategies  **
+# **Creating Option trading stategies**
 
 In this script, we will construct a variety of strategies utilizing fictitious optional data.
 We will establish  "Option"& "Stocks" data type and devise distinct strategies from it. 
