@@ -48,10 +48,22 @@ In this script, we will construct a variety of strategies using real optional da
 We will establish  "Option"& "Stocks" data type and devise distinct strategies from it. 
 Additionally, we will plot the corresponding Payoff profiles for these strategies. We will have the capability to display the Greek profiles of these strategies, projected over a range of underlying prices. This will allow us to analyze and evaluate the potential outcomes and risks associated with each strategies.
 
--Call (BULL) Spread / Put (Bear) Spread
+In the case of the following strategies we have taken real options that quote the market on the underlying TSLA. 
 
-![](Images/putSpread.png)
-![](Images/callSpread.png)
+# type of code to generate simple call spread strategy
+ticker = 'TSLA'
+
+## Get Option & underlying stock price
+option_df = y_finane_option_data.get_option_data(ticker)
+stockPrices_ = y_finane_stock_data.get_stock_price(ticker)
+```
+
+
+Put Spread Payoff             | Call Spread Payoff
+:-------------------------:|:-------------------------:
+<img src="Images/putSpread.png" width="400">  |  <img src="Images/callSpread.png" width="400">
+
+
 -Butterflies , Straddle , Strangle
 
 
