@@ -12,9 +12,24 @@ Analysis :
 
 **Data Retrieval**
 
-The code first uses the y_finane_option_data and y_finane_stock_data internal modules to retrieve option and stock data for a
-specific ticker (TSLA will be used in this case). The underlying stock's last price
-is then calculated from the retrieved stock data.
+The initial step in this code utilizes the yahoofinance API to access financial quotes. This is achieved through the use of the internal modules y_finane_option_data and y_finane_stock_data, which are utilized to retrieve option and stock data for a specific ticker symbol.
+
+During all the analysis of Read.me we will use as symbol *TSLA*
+
+# **Creating Option trading stategies  **
+
+In this script, we will construct a variety of strategies utilizing fictitious optional data.
+We will establish  "Option"& "Stocks" data type and devise distinct strategies from it. 
+Additionally, we will plot the corresponding Payoff profiles for these strategies. We will have the capability to display the Greek profiles of these strategies, projected over a range of underlying prices. This will allow us to analyze and evaluate the potential outcomes and risks associated with each strategies.
+
+
+source file : mainOptionStrategies.py
+
+
+
+
+
+
 
 # **Implied Volatility Calculation and Plotting for Options**
 
@@ -25,7 +40,4 @@ The basic idea behind the Heston model is that the volatility of an asset's pric
 
 source file : mainHestonSimulation.py
 
-# **Creating Option trading stategies and plotting greeks profile of theses strategyies **
-
-source file : mainOptionStrategies.py
 
