@@ -27,9 +27,9 @@ Additionally, we will plot the corresponding Payoff profiles for these strategie
 source file : mainOptionStrategies.py
 
 
+# **Option Princing : comparison of two methods : Binomial & B&S **
 
-
-
+source file : mainPricingModel.py
 
 
 # **Implied Volatility Calculation and Plotting for Options**
