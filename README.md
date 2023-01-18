@@ -27,6 +27,7 @@ Additionally, we will plot the corresponding Payoff profiles for these strategie
 source file : mainOptionStrategies.py
 
 
+
 # **Option Princing : comparison of two methods : Binomial & B&S**
 
 source file : mainPricingModel.py
@@ -39,8 +40,6 @@ source file : mainPricingModel.py
 => ploting skew/smile on short and long maturites ( short/long Smile)
 
 
-
-
 source file : mainImpliedVolatility.py
 
 # **Simulating heston Volatility**
@@ -51,4 +50,7 @@ The basic idea behind the Heston model is that the volatility of an asset's pric
 
 source file : mainHestonSimulation.py
 
+# **Does the market follow a normal law?**
+
+source file : mainReturnsAnalysis.py
 
