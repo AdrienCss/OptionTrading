@@ -101,15 +101,34 @@ Put Spread Payoff             | Call Spread Payoff
 <img src="Images/putSpread.png" width="400">  |  <img src="Images/callSpread.png" width="400">
 
 
+
 -Butterflies , Straddle , Strangle
-
-
-
 
 -Synthetic forward
 
 -Covered call/ Put
 
+ **Call Spread Greeks Profile**
+The engine also allows you to profile greek strategies.
+Here are the results obtained for a call spread
+
+```ruby
+T = 1 
+r= 0.015 # risk free rate
+vol = IV
+
+strategy.compute_greek_profile(T ,r , vol)
+strategy.plotGreek(greekStr='gamma')
+strategy.plotGreek(greekStr='theta')
+strategy.plotGreek(greekStr='delta')
+strategy.plotGreek(greekStr='vega')
+```
+
+Delta profile             | Gamma Profile
+:-------------------------:|:-------------------------:
+<img src="Images/putSpread.png" width="400">  |  <img src="Images/callSpread.png" width="400">
+Vega profile             | Rho Profile
+<img src="Images/putSpread.png" width="400">  |  <img src="Images/callSpread.png" width="400">
 
 source file =>  [mainOptionStrategies.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainOptionStrategies.py)<=
 
