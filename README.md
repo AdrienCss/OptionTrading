@@ -149,6 +149,28 @@ source file =>  [mainImpliedVolatility.py](https://github.com/AdrienCss/OptionTr
 The basic idea behind the Heston model is that the volatility of an asset's price is not constant over time, but rather follows a stochastic process. The model describes the dynamics of the asset's price and volatility using two state variables: the current price of the asset and its current volatility. The model then uses a set of parameters to describe how these state variables change over time.
 
 
+The Heston process is described by the <font color=blue> system of </font> SDE<font color=blue>s</font>: 
+
+$$ \begin{cases}
+dS_t = \mu S_t dt + \sqrt{v_t} S_t dW^1_t \\
+dv_t = \kappa (\theta - v_t) dt + \sigma \sqrt{v_t} dW^2_t 
+\end{cases}$$
+
+so we can use folowing discretionnary process:
+
+$$ \begin{cases}
+S_(t+1) =S_t + \mu S_t dt + \sqrt{v_t} S_t dW^1_t \\
+v_(t+1) =v_t + \kappa (\theta - v_t) dt + \sigma \sqrt{v_t} dW^2_t 
+\end{cases}$$
+
+
+The parameters are:
+- $\mu$ drift of the stock process
+- $\kappa$ mean reversion coefficient of the variance process
+- $\theta$ long term mean of the variance process 
+- $\sigma$  volatility coefficient of the variance process
+- $\rho$ correlation between $W^1$ and $W^2$ i.e. $dW^1_t dW^2_t = \rho dt$
+
 source file =>  [mainHestonSimulation.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainHestonSimulation.py)<=
 
 # **Does the market follow a normal law?**
