@@ -40,7 +40,7 @@ put_OTM = Option(price=put_OTM['lastPrice'].values[0], K=put_OTM['strike'].value
 put_ITM = Option(price=put_ITM['lastPrice'].values[0], K=put_ITM['strike'].values[0] , type= OpionType.PUT)
 
 #stock = Stock(price = currentprice)
-
+ 
 
 # Creating call spead
 strategy = OptionStrategies(name = "Call spread (ITM / OTM)" ,St = currentprice)
@@ -50,7 +50,6 @@ strategy.plot()
 
 
 strategy.compute_greek_profile(T ,r , vol)
-
 strategy.plotGreek(greekStr='gamma')
 strategy.plotGreek(greekStr='theta')
 strategy.plotGreek(greekStr='delta')
@@ -65,13 +64,38 @@ strategy.plot()
 
 
 strategy.compute_greek_profile(T ,r , vol)
-
-strategy.plot()
-
-
-
-
 strategy.plotGreek(greekStr='gamma')
 strategy.plotGreek(greekStr='theta')
 strategy.plotGreek(greekStr='delta')
 strategy.plotGreek(greekStr='vega')
+
+
+
+# Creating Straddle => Same Strike
+#Check that CALL = PUT strike
+strategy = OptionStrategies(name = "Straddle ITM" ,St = currentprice)
+strategy.add_Option(option= call_ITM ,buySell= BuySellSide.BUY , option_number=1 )
+strategy.add_Option(option= put_ITM,buySell= BuySellSide.SELL , option_number=1 )
+strategy.plot()
+
+strategy.compute_greek_profile(T ,r , vol)
+strategy.plotGreek(greekStr='gamma')
+strategy.plotGreek(greekStr='theta')
+strategy.plotGreek(greekStr='delta')
+strategy.plotGreek(greekStr='vega')
+
+
+# Creating Strangle => two différents strikes
+#Check that CALL strike  >  PUT strike
+strategy = OptionStrategies(name = "" ,St = currentprice)
+strategy.add_Option(option= call_ITM ,buySell= BuySellSide.BUY , option_number=1 )
+strategy.add_Option(option= put_OTM ,buySell= BuySellSide.SELL , option_number=1 )
+strategy.plot()
+
+strategy.compute_greek_profile(T ,r , vol)
+strategy.plotGreek(greekStr='gamma')
+strategy.plotGreek(greekStr='theta')
+strategy.plotGreek(greekStr='delta')
+strategy.plotGreek(greekStr='vega')
+
+
