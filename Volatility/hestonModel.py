@@ -1,7 +1,7 @@
 import numpy as np
 import matplotlib.pyplot as plt
 from DataRequest import  y_finane_option_data , y_finane_stock_data
-
+import pandas as pd
 
 # first Generating Correlated Random Variable
 
@@ -45,8 +45,59 @@ currentPrice = stockPrices_.tail(1)['Adj Close'].values[0]
 
 
 
-def generate_heston_paths(S, T, r, kappa, theta, v_0, rho, xi, steps, Npaths, return_vol=False):
-    dt =T/steps
-   # size =(Npath , )
+
+# Parameters
+# simulation dependent
+S0 =  float(currentPrice)           # asset price
+T = 1.0                # time in years
+r = 0.02               # risk-free rate
+N = 252                # number of time steps in simulation
+
+# Heston dependent parameters
+kappa = 3          #rate of mean reversion of variance under risk-neutral dynamics
+theta = 0.20**2    #avg_variance_3M  #0.20**2   # long-term mean of variance under risk-neutral dynamics
+v0 = 0.25**2       #avg_variance_3M**2    # # initial variance under risk-neutral dynamics
+rho = 0.7          #rhoHisto          # 0.7 # correlation between returns and variances under risk-neutral dynamics
+sigma = 0.6        # volatility of volatility
+
+
+def heston_model_sim(S0, v0, rho, kappa, theta, sigma, T, N, M=10):
+
+    dt = T / N
+    mu = np.array([0, 0])
+    cov = np.array([[1, rho], [rho, 1]])
+
+    S = np.full(shape=(N + 1, M), fill_value=S0)
+    v = np.full(shape=(N + 1, M), fill_value=v0)
+
+    W = np.random.multivariate_normal(mu, cov, (N, M))
+
+    for i in range(1, N + 1):
+        S[i] = S[i - 1] * np.exp((r - 0.5 * v[i - 1]) * dt + np.sqrt(v[i - 1] * dt) * W[i - 1, :, 0])
+        v[i] = np.maximum(v[i - 1] + kappa * (theta - v[i - 1]) * dt + sigma * np.sqrt(v[i - 1] * dt) * W[i - 1, :, 1] , 0)
+
+    return S, v
+
+
+## Ploting hypothetical price with heston Model
+
+rho_p = 0.98
+rho_n = -0.98
+
+stockPrices_['returns'] = np.full(100 , 100)
+s_sim , vol_sim =  heston_model_sim(S0, v0, rho_p, kappa, theta, sigma,T, N, 10)
+
+new_df = pd.concat([stockPrices_['returns'], pd.DataFrame(s_sim)],ignore_index=True)
+new_df = new_df.fillna(method='ffill', axis=1)
+
+size_pred = len(s_sim)
+size_realized = len(new_df) - size_pred
+
+
+plt.plot(new_df.iloc[:size_pred , :], color='blue', label='Heston Prediction')
+plt.plot(new_df.iloc[size_realized:,:], color='red',label='realized')
+plt.legend()
+# Show the plot
+plt.show()
 
 # Maybe the good chose would be to request the price of underlying stock
