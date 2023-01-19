@@ -7,7 +7,6 @@ from DataRequest import  y_finane_option_data , y_finane_stock_data
 from Volatility.ImpliedVolatiliy import compute_theorical_IV, plot_ImpliedVolatility
 import numpy as np
 
-
 ticker = 'TSLA'
 
 ## Get Option/underlying stock Prices
@@ -25,22 +24,25 @@ options_df = option_df[option_df['T_days'] ==random_maturity]
 call_df = options_df[options_df['Type'] =='CALL']
 put_df = options_df[options_df['Type'] =='PUT']
 
-call_OTM = call_df.iloc[(call_df['strike']-(currentprice + 15)).abs().argsort()[:1]]
-call_ITM = call_df.iloc[(call_df['strike']-(currentprice - 15)).abs().argsort()[:1]]
+call_OTM_df = call_df.iloc[(call_df['strike']-(currentprice + 15)).abs().argsort()[:1]]
+call_ITM_df = call_df.iloc[(call_df['strike']-(currentprice - 15)).abs().argsort()[:1]]
 
-put_OTM = put_df.iloc[(put_df['strike']-(currentprice - 15)).abs().argsort()[:1]]
-put_ITM = put_df.iloc[(put_df['strike']-(currentprice + 15)).abs().argsort()[:1]]
+put_OTM_df = put_df.iloc[(put_df['strike']-(currentprice - 15)).abs().argsort()[:1]]
+put_ITM_df = put_df.iloc[(put_df['strike']-(currentprice + 15)).abs().argsort()[:1]]
 
 
 ## creating initial options objects
-call_OTM = Option(price=call_OTM['lastPrice'].values[0], K=call_OTM['strike'].values[0] , type= OpionType.CALL)
-call_ITM = Option(price=call_ITM['lastPrice'].values[0], K=call_ITM['strike'].values[0] , type= OpionType.CALL)
+call_OTM = Option(price=call_OTM_df['lastPrice'].values[0], K=call_OTM_df['strike'].values[0] , type= OpionType.CALL)
+call_ITM = Option(price=call_ITM_df['lastPrice'].values[0], K=call_ITM_df['strike'].values[0] , type= OpionType.CALL)
 
-put_OTM = Option(price=put_OTM['lastPrice'].values[0], K=put_OTM['strike'].values[0] , type= OpionType.PUT)
-put_ITM = Option(price=put_ITM['lastPrice'].values[0], K=put_ITM['strike'].values[0] , type= OpionType.PUT)
+put_OTM = Option(price=put_OTM_df['lastPrice'].values[0], K=put_OTM_df['strike'].values[0] , type= OpionType.PUT)
+put_ITM = Option(price=put_ITM_df['lastPrice'].values[0], K=put_ITM_df['strike'].values[0] , type= OpionType.PUT)
 
 #stock = Stock(price = currentprice)
- 
+
+T = 6
+r = 0.015
+vol =  0.20#(call_OTM_df['impliedVolatility'].values[0] + call_ITM_df['impliedVolatility'].values[0] )/ 2
 
 # Creating call spead
 strategy = OptionStrategies(name = "Call spread (ITM / OTM)" ,St = currentprice)

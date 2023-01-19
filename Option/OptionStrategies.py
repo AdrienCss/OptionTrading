@@ -104,7 +104,7 @@ class OptionStrategies:
         instr_side =list(zip(self.side,self.instruments))
 
         for side , instr in instr_side:
-            self.delta =self.delta + side * Greeks.Delta(self.STs ,instr.K ,T , r , sigma ,  instr.type)
+            self.delta = self.delta + side * Greeks.Delta(self.STs ,instr.K ,T , r , sigma ,  instr.type)
             self.gamma = self.gamma + side * Greeks.Gamma(self.STs ,instr.K ,T , r , sigma)
             self.vega = self.vega + side * Greeks.Vega(self.STs ,instr.K ,T , r , sigma )
             self.theta = self.theta + side * Greeks.Theta(self.STs ,instr.K ,T , r , sigma ,  instr.type)

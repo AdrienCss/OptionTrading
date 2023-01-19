@@ -126,9 +126,9 @@ strategy.plotGreek(greekStr='vega')
 
 Delta profile             | Gamma Profile
 :-------------------------:|:-------------------------:
-<img src="Images/putSpread.png" width="400">  |  <img src="Images/callSpread.png" width="400">
-Vega profile             | Rho Profile
-<img src="Images/putSpread.png" width="400">  |  <img src="Images/callSpread.png" width="400">
+<img src="Images/Delta.png" width="400">  |  <img src="Images/Gamma.png" width="400">
+Vega profile             | Theta Profile
+<img src="Images/Vega.png" width="400">  |  <img src="Images/Theta.png" width="400">
 
 source file =>  [mainOptionStrategies.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainOptionStrategies.py)<=
 
