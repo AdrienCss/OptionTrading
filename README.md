@@ -227,7 +227,7 @@ Returns              | Realized Volatility
 
 
 
-Heston Volatility              | Price trajectories
+Heston Volatility              | Price trajectories (Monte Carlo)
 :-------------------------:|:-------------------------:
 <img src="Images/Heston Vol.png" width="400">  |  <img src="Images/TSLA Price.png" width="400">
 
