@@ -171,6 +171,22 @@ The parameters are:
 - $\sigma$  volatility coefficient of the variance process
 - $\rho$ correlation between $W^1$ and $W^2$ i.e. $dW^1_t dW^2_t = \rho dt$
 
+
+Returns              | Realized Volatility
+:-------------------------:|:-------------------------:
+<img src="Images/TSLA returns.png" width="400">  |  <img src="Images/TSLA Vol.png" width="400">
+
+
+
+
+
+Heston Volatility              | Price trajectories
+:-------------------------:|:-------------------------:
+<img src="Images/Heston Vol.png" width="400">  |  <img src="Images/TSLA Price.png" width="400">
+
+
+
+
 source file =>  [mainHestonSimulation.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainHestonSimulation.py)<=
 
 # **Does the market follow a normal law?**
