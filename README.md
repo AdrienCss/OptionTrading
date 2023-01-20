@@ -191,6 +191,14 @@ source file =>  [mainPricingModel.py](https://github.com/AdrienCss/OptionTrading
 
 source file =>  [mainImpliedVolatility.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainImpliedVolatility.py)<=
 
+
+We can observe implied ( black) volatility Skew at different maturites ( long/short smile)
+
+
+PUT Skew             | CALL Skew
+:-------------------------:|:-------------------------:
+<img src="Images/CallSkew.png" width="400">  |  <img src="Images/PutSkew.png" width="400">
+
 # **Simulating heston Volatility**
 
 The basic idea behind the Heston model is that the volatility of an asset's price is not constant over time, but rather follows a stochastic process. The model describes the dynamics of the asset's price and volatility using two state variables: the current price of the asset and its current volatility. The model then uses a set of parameters to describe how these state variables change over time.
