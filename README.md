@@ -104,7 +104,62 @@ Put Spread Payoff             | Call Spread Payoff
 
 -Butterflies , Straddle , Strangle
 
--Synthetic forward
+
+
+Straddle Payoff             | Strangle Payoff
+:-------------------------:|:-------------------------:
+<img src="Images/putSpread.png" width="400">  |  <img src="Images/callSpread.png" width="400">
+
+Butterflies             | To Complete
+:-------------------------:|:-------------------------:
+<img src="Images/putSpread.png" width="400">  |  <img src="Images/callSpread.png" width="400">
+
+
+
+A synthetic call is a combination of a stock and a cash position, such as a long stock position and a short put option position, that simulates the payoff of a long call option. A synthetic put is a combination of a stock and a cash position, such as a short stock position and a long call option position, that simulates the payoff of a long put option. These options strategies can be used to replicate the payout of a call or put option, while potentially reducing the cost or risk associated with buying or selling the actual option.
+
+```ruby
+#synthetic call
+
+put_df1 = put_df.iloc[(put_df['strike']-(currentprice - 15)).abs().argsort()[:1]]
+
+put = Option(price=put_df1['lastPrice'].values[0], K=put_df1['strike'].values[0] , type= OpionType.PUT)
+stock = Stock(price = last_price)
+
+strategy = OptionStrategies(name = "Synthetic call" ,St = currentprice)
+strategy.add_Option(option= put ,buySell= BuySellSide.BUY, option_number=1 )
+strategy.add_deltaOne(stock=stock,buySell= BuySellSide.BUY )
+strategy.plot()
+
+
+
+#synthetic PUT
+
+call_df1 = call_df.iloc[(call_df['strike']-(currentprice - 15)).abs().argsort()[:1]]
+
+call = Option(price=call_df1['lastPrice'].values[0], K=call_df1['strike'].values[0] , type= OpionType.CALL)
+stock = Stock(price = currentprice)
+
+strategy = OptionStrategies(name = "Synthetic PUT", St = currentprice)
+strategy.add_Option(option= call ,buySell= BuySellSide.BUY, option_number=1 )
+strategy.add_deltaOne(stock=stock,buySell= BuySellSide.SELL )
+strategy.plot()
+```
+
+
+
+Synthetic call         |  Synthetic Put
+:-------------------------:|:-------------------------:
+<img src="Images/putSpread.png" width="400">  |  <img src="Images/callSpread.png" width="400">
+
+Synthetic call         | 
+:-------------------------:
+<img src="Images/putSpread.png" width="400">  | 
+
+
+
+
+
 
 -Covered call/ Put
 
