@@ -108,7 +108,7 @@ Put Spread Payoff             | Call Spread Payoff
 
 Straddle Payoff             | Strangle Payoff
 :-------------------------:|:-------------------------:
-<img src="Images/putSpread.png" width="400">  |  <img src="Images/callSpread.png" width="400">
+<img src="Images/straddle.png" width="400">  |  <img src="Images/strangle.png" width="400">
 
 Butterflies             | To Complete
 :-------------------------:|:-------------------------:
@@ -150,15 +150,7 @@ strategy.plot()
 
 Synthetic call         |  Synthetic Put
 :-------------------------:|:-------------------------:
-<img src="Images/putSpread.png" width="400">  |  <img src="Images/callSpread.png" width="400">
-
-Synthetic call         | 
-:-------------------------:
-<img src="Images/putSpread.png" width="400">  | 
-
-
-
-
+<img src="Images/SyntheticCall.png" width="400">  |  <img src="Images/SyntheticPUT.png" width="400">
 
 
 -Covered call/ Put
