@@ -228,16 +228,6 @@ The parameters are:
 
 A few brief observations on the TSLA share price
 
-Returns              | Realized Volatility
-:-------------------------:|:-------------------------:
-<img src="Images/TSLA returns.png" width="400">  |  <img src="Images/TSLA Vol.png" width="400">
-
-
-The kurtosis of 5.08 indicates that the distribution of the data is higher than that of a normal distribution (kurtosis = 3), which means that there are more observations in the extreme values (highs and lows) than one would expect for a normal distribution. The skewness of -0.05 indicates that the distribution is slightly skewed to the left.
-
-
-In the case of the rolling volatility graph of TESLA stock returns, we can observe how the variability of returns changes over time. The average return to variance is 0.30.
-
 ```ruby
 ticker ='TSLA'
 
@@ -257,6 +247,18 @@ stockPrices_['realised_volatility_3M'] =stockPrices_['returns_1D'].rolling(60).s
 stockPrices_['realised_volatility_6M'] =stockPrices_['returns_1D'].rolling(120).std()* np.sqrt(252)
 
 ```
+
+
+Returns              | Realized Volatility
+:-------------------------:|:-------------------------:
+<img src="Images/TSLA returns.png" width="400">  |  <img src="Images/TSLA Vol.png" width="400">
+
+
+The kurtosis of 5.08 indicates that the distribution of the data is higher than that of a normal distribution (kurtosis = 3), which means that there are more observations in the extreme values (highs and lows) than one would expect for a normal distribution. The skewness of -0.05 indicates that the distribution is slightly skewed to the left.
+
+
+In the case of the rolling volatility graph of TESLA stock returns, we can observe how the variability of returns changes over time. The average return to variance is 0.30.
+
 
 
 Heston Volatility              | Price trajectories (Monte Carlo)
