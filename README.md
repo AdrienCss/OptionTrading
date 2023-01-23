@@ -185,11 +185,11 @@ source file =>  [mainPricingModel.py](https://github.com/AdrienCss/OptionTrading
 
 The B&S model is based on the following assumptions:
 
-The underlying asset price follows a geometric Brownian motion with constant drift and volatility.
-There are no transaction costs or taxes.
-Trading can be done continuously.
-The risk-free interest rate is constant.
-The option can only be exercised at expiration.
+- The underlying asset price follows a geometric Brownian motion with constant drift and volatility.
+- There are no transaction costs or taxes.
+- Trading can be done continuously.
+- The risk-free interest rate is constant.
+- The option can only be exercised at expiration.
 
 Under these assumptions, the Black-Scholes model provides a closed-form solution for the price of a European call or put option.
 
