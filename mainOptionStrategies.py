@@ -143,5 +143,23 @@ stock = Stock(price = currentprice)
 strategy = OptionStrategies(name = "Synthetic PUT", St = currentprice)
 strategy.add_Option(option= call ,buySell= BuySellSide.BUY, option_number=1 )
 strategy.add_deltaOne(stock=stock,buySell= BuySellSide.SELL )
+
 strategy.plot()
 
+#Butterfly
+
+call1 = Option(price=put_df1['lastPrice'].values[0], K=put_df1['strike'].values[0] , type= OpionType.PUT)
+call2 = Option(price=put_df1['lastPrice'].values[0], K=put_df1['strike'].values[0] , type= OpionType.PUT)
+call2 = Option(price=put_df1['lastPrice'].values[0], K=put_df1['strike'].values[0] , type= OpionType.PUT)
+
+
+
+stock = Stock(price = last_price)
+
+obj = OptionStrategies('Butterfly Spread', St = currentprice)
+strategy.add_Option(option= call ,buySell= BuySellSide.BUY, option_number=1 )
+strategy.add_Option(option= call ,buySell= BuySellSide.BUY, option_number=1 )
+strategy.add_Option(option= call ,buySell= BuySellSide.BUY, option_number=1 )
+
+obj.plot(color='black', linewidth=2)
+obj.describe()

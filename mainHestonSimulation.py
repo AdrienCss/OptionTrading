@@ -3,6 +3,7 @@ import matplotlib.pyplot as plt
 from DataRequest import  y_finane_option_data , y_finane_stock_data
 from scipy.stats import kurtosis, skew , norm,stats
 from Volatility.hestonModel import  heston_model_sim
+from Volatility.ImpliedVolatiliy import compute_theorical_IV
 import pandas as pd
 import warnings
 warnings.simplefilter("ignore", category=FutureWarning)
@@ -12,6 +13,7 @@ ticker ='TSLA'
 
 #Requesting stock price
 stockPrices_ = y_finane_stock_data.get_stock_price(ticker)
+optionPrice_ = y_finane_option_data.get_option_data(ticker)
 
 stockPrices_['returns_1D'] = np.log(stockPrices_['Adj Close'] / stockPrices_['Adj Close'].shift(1))
 returns = stockPrices_['returns_1D'].dropna(axis=0)
@@ -36,10 +38,6 @@ stockPrices_['realised_volatility_6M'] =stockPrices_['returns_1D'].rolling(120).
 stockPrices_.plot( y=['realised_volatility_3M','realised_volatility_6M'])
 plt.title(f'{ticker} stock Realized volatilities')
 plt.show()
-
-
-
-
 
 # Parameters
 timeSeries = stockPrices_.tail(300)
@@ -73,7 +71,7 @@ new_df = pd.concat([timeSeries,s_sim])
 new_df = new_df.fillna(method='ffill', axis=1)
 
 
-
+#Ploting volatilitty
 plt.plot(new_df.head(len(timeSeries)), color='blue')
 plt.plot(new_df.tail(len(s_sim)), color='red')
 plt.xticks(rotation=45)
@@ -82,10 +80,36 @@ plt.legend()
 plt.title(f'{ticker} Heston Price Paths simulation' )
 plt.show()
 
-
+#Ploting volatilitty
 vol_sim = pd.DataFrame(vol_sim)
 vol_sim.index = new_index[:len(vol_sim)]
 vol_sim.plot()
 plt.ylabel('Volatility')
 plt.title('Heston Stochatic Vol Simulation')
 plt.show()
+
+
+
+strikes =np.arange(currentPrice - 100, currentPrice  + 100,1)
+
+calls = []
+test_s = s_sim[:,-1]
+
+
+for K in strikes:
+    C = np.mean(np.maximum(K-test_s,0))*np.exp(-r*T)
+    calls.append(C)
+
+
+ivs = [compute_theorical_IV(C, currentPrice, K, T, r,type_='CALL') for C, K in zip(calls,strikes)]
+
+plt.plot(strikes, ivs)
+plt.ylabel('Implied Volatility')
+plt.xlabel('Strike')
+plt.axvline(currentPrice, color='black',linestyle='--',label='Spot Price')
+plt.title('Implied Volatility Smile from Heston Model')
+plt.legend()
+plt.show()
+
+
+

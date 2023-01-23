@@ -16,4 +16,10 @@ def BS_PUT(S, K, T, r, sigma):
     return K* np.exp(-r*T) * N(-d2) - S*N(-d1)
 
 
-
+def priceBS(S, K, T, r, sigma ,type='CALL'):
+    if type == 'CALL':
+        return BS_CALL(S, K, T, r, sigma)
+    if type == 'PUT':
+        return BS_PUT(S, K, T, r, sigma)
+    else:
+        raise ValueError('Unrecognized type')
