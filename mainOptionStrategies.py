@@ -132,7 +132,6 @@ strategy.add_deltaOne(stock=stock,buySell= BuySellSide.BUY )
 strategy.plot()
 
 
-
 #synthetic PUT
 
 call_df1 = call_df.iloc[(call_df['strike']-(currentprice - 15)).abs().argsort()[:1]]
@@ -147,19 +146,21 @@ strategy.add_deltaOne(stock=stock,buySell= BuySellSide.SELL )
 strategy.plot()
 
 #Butterfly
+obj = OptionStrat('Butterfly Spread', 100, {'start': 85, 'stop':115,'by':0.1})
+obj.long_call(94, 8, 1)        
+obj.long_call(106, 2, 1)
+obj.short_call(100, 4, 2)              
+obj.plot(color='black', linewidth=2)  
+obj.describe()
 
-call1 = Option(price=put_df1['lastPrice'].values[0], K=put_df1['strike'].values[0] , type= OpionType.PUT)
-call2 = Option(price=put_df1['lastPrice'].values[0], K=put_df1['strike'].values[0] , type= OpionType.PUT)
-call2 = Option(price=put_df1['lastPrice'].values[0], K=put_df1['strike'].values[0] , type= OpionType.PUT)
 
+call1 = Option(price=8, K=currentprice-10 , type = OpionType.CALL)
+call2 = Option(price=2, K=currentprice+5 , type = OpionType.CALL)
+call3 = Option(price=4, K=currentprice+10, type = OpionType.CALL)
 
-
-stock = Stock(price = last_price)
 
 obj = OptionStrategies('Butterfly Spread', St = currentprice)
-strategy.add_Option(option= call ,buySell= BuySellSide.BUY, option_number=1 )
-strategy.add_Option(option= call ,buySell= BuySellSide.BUY, option_number=1 )
-strategy.add_Option(option= call ,buySell= BuySellSide.BUY, option_number=1 )
-
-obj.plot(color='black', linewidth=2)
-obj.describe()
+strategy.add_Option(option= call1 ,buySell= BuySellSide.BUY, option_number=1 )
+strategy.add_Option(option= call2 ,buySell= BuySellSide.SHORT, option_number=1 )
+strategy.add_Option(option= call3 ,buySell= BuySellSide.BUY, option_number=1 )
+strategy.plot()
