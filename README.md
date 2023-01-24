@@ -193,6 +193,9 @@ The B&S model is based on the following assumptions:
 
 Under these assumptions, the Black-Scholes model provides a closed-form solution for the price of a European call or put option.
 
+The binomial model provides a multi-period view of the underlying asset price as well as the price of the option. In contrast to the Black-Scholes model, which provides a numerical result based on inputs, the binomial model allows for the calculation of the asset and the option for multiple periods along with the range of possible results for each period .
+
+
 
 
 
@@ -207,10 +210,94 @@ source file =>  [mainImpliedVolatility.py](https://github.com/AdrienCss/OptionTr
 
 We can observe implied ( black) volatility Skew at different maturites ( long/short smile)
 
+**Volatility Skew for different maturities ( days)**
+
+```ruby
+ticker ='TSLA'
+
+#Requesting stock price
+stockPrices_ = y_finane_stock_data.get_stock_price(ticker)
+
+#Compute daily's Log return
+stockPrices_['returns_1D'] = np.log(stockPrices_['Adj Close'] / stockPrices_['Adj Close'].shift(1))
+returns = stockPrices_['returns_1D'].dropna(axis=0)
+
+# details
+kurt = kurtosis(returns.values)
+sk = skew( returns.values)
+
+# Compute & plot volatility
+stockPrices_['realised_volatility_3M'] =stockPrices_['returns_1D'].rolling(60).std() * np.sqrt(252)
+stockPrices_['realised_volatility_6M'] =stockPrices_['returns_1D'].rolling(120).std()* np.sqrt(252)
+
+```
 
 PUT Skew             | CALL Skew
 :-------------------------:|:-------------------------:
 <img src="Images/CallSkew.png" width="400">  |  <img src="Images/PutSkew.png" width="400">
+
+
+**Observation of Implied Volatility Surface**
+
+```ruby
+import yfinance as yf
+import datetime as dt
+import numpy as np
+import matplotlib.pyplot as plt
+from itertools import chain
+from matplotlib import cm
+
+def plot_volatility_surface(ticker: str):
+    stock = yf.Ticker(ticker)
+    maturities = stock.options
+
+    # Get current date
+    today = dt.datetime.now().date()
+    days_to_expire = []
+    call_data = []
+
+    for maturity in maturities:
+        maturity_date = dt.datetime.strptime(maturity, '%Y-%m-%d').date()
+        days_to_expire.append((maturity_date - today).days)
+        call_data.append(stock.option_chain(maturity).calls)
+
+    strikes = list(chain(*[calls["strike"] for calls in call_data]))
+    dte_extended = list(chain(*[np.repeat(dte, len(calls)) for dte, calls in zip(days_to_expire, call_data)]))
+    imp_vol = list(chain(*[calls["impliedVolatility"] for calls in call_data]))
+
+    # Initiate figure
+    fig = plt.figure(figsize=(7,7))
+    # Set projection to 3d
+    axs = plt.axes(projection="3d")
+    # Use plot_trisurf from mplot3d to plot surface and cm for color scheme
+    axs.plot_trisurf(strikes, dte_extended, imp_vol, cmap=cm.coolwarm)
+    # Change angle
+    axs.view_init(40, 65)
+    # Add labels
+    plt.xlabel("Strike")
+    plt.ylabel("Days to expire")
+    plt.title(f"Volatility Surface for {ticker} - Implied Volatility as a Function of K and T")
+    plt.show()
+    
+    
+plot_volatility_surface('AAPL')
+
+```
+
+
+
+
+ Black Implied Volatility CALL |  Black Implied Volatility PUT 
+:-------------------------:|:-------------------------:
+<img src="Images/CallSkew.png" width="400">  |  <img src="Images/PutSkew.png" width="400">
+
+
+# **Local volatility vs implied Volatility**
+
+
+Take slice
+
+
 
 # **Simulating heston Volatility**
 
