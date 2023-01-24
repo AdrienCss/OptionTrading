@@ -44,6 +44,9 @@ Example of output with TLSA:
 
 # **Creating Option trading stategies**
 
+- [mainOptionStrategies.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainOptionStrategies.py)<=
+
+
 In this script, we will construct a variety of strategies using real optional data.
 We will establish  "Option"& "Stocks" data type and devise distinct strategies from it. 
 Additionally, we will plot the corresponding Payoff profiles for these strategies. We will have the capability to display the Greek profiles of these strategies, projected over a range of underlying prices. This will allow us to analyze and evaluate the potential outcomes and risks associated with each strategies.
@@ -110,9 +113,11 @@ Straddle Payoff             | Strangle Payoff
 :-------------------------:|:-------------------------:
 <img src="Images/straddle.png" width="400">  |  <img src="Images/strangle.png" width="400">
 
-Butterflies             | To Complete
+
+Butterflies             | Strangle Payoff
 :-------------------------:|:-------------------------:
-<img src="Images/putSpread.png" width="400">  |  <img src="Images/callSpread.png" width="400">
+<img src="Images/straddle.png" width="400">  |  <img src="Images/strangle.png" width="400">
+
 
 
 
@@ -177,11 +182,10 @@ Delta profile             | Gamma Profile
 Vega profile             | Theta Profile
 <img src="Images/Vega.png" width="400">  |  <img src="Images/Theta.png" width="400">
 
-source file =>  [mainOptionStrategies.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainOptionStrategies.py)<=
 
-# **Option Princing : comparison of two methods : Binomial & B&S**
+# **Option Princing : Binomial & B&S**
 
-source file =>  [mainPricingModel.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainPricingModel.py)<=
+-  [mainPricingModel.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainPricingModel.py)<=
 
 The B&S model is based on the following assumptions:
 
@@ -196,14 +200,11 @@ Under these assumptions, the Black-Scholes model provides a closed-form solution
 The binomial model provides a multi-period view of the underlying asset price as well as the price of the option. In contrast to the Black-Scholes model, which provides a numerical result based on inputs, the binomial model allows for the calculation of the asset and the option for multiple periods along with the range of possible results for each period .
 
 
-
-
-
 # **Implied Volatility Calculation and Plotting for Options**
 
-=> Ploting observed implied volatility of real option's quotes.
-=> Computing implied volatility using Newton-Raphson Model.
-=> ploting skew/smile on short and long maturites ( short/long Smile)
+- Ploting observed implied volatility of real option's quotes.
+- Computing implied volatility using Newton-Raphson Model.
+- ploting skew/smile on short and long maturites ( short/long Smile)
 
 source file =>  [mainImpliedVolatility.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainImpliedVolatility.py)<=
 
@@ -240,56 +241,39 @@ PUT Skew             | CALL Skew
 **Observation of Implied Volatility Surface**
 
 ```ruby
-import yfinance as yf
-import datetime as dt
-import numpy as np
 import matplotlib.pyplot as plt
-from itertools import chain
 from matplotlib import cm
 
-def plot_volatility_surface(ticker: str):
-    stock = yf.Ticker(ticker)
-    maturities = stock.options
+## Get Option/underlying stock Prices
+option_df = y_finane_option_data.get_option_data(ticker)
+stockPrices_ = y_finane_stock_data.get_stock_price(ticker)
+last_price = stockPrices_.tail(1)['Adj Close'].values[0]
+option_df['underlying_LastPrice'] = last_price
 
-    # Get current date
-    today = dt.datetime.now().date()
-    days_to_expire = []
-    call_data = []
+type = 'CALL'
+opt =  option_df[(option_df.Type==type)]
+opt =  opt[(opt.strike <= last_price+100)]
+opt =  opt[(opt.strike >= last_price-100)]
+opt =  opt[(opt.T_days <=200)]
+opt['MoneyNess'] = opt['underlying_LastPrice'] / opt['strike']
+opt = opt[['strike' , 'T_days','impliedVolatility']]
 
-    for maturity in maturities:
-        maturity_date = dt.datetime.strptime(maturity, '%Y-%m-%d').date()
-        days_to_expire.append((maturity_date - today).days)
-        call_data.append(stock.option_chain(maturity).calls)
-
-    strikes = list(chain(*[calls["strike"] for calls in call_data]))
-    dte_extended = list(chain(*[np.repeat(dte, len(calls)) for dte, calls in zip(days_to_expire, call_data)]))
-    imp_vol = list(chain(*[calls["impliedVolatility"] for calls in call_data]))
-
-    # Initiate figure
-    fig = plt.figure(figsize=(7,7))
-    # Set projection to 3d
-    axs = plt.axes(projection="3d")
-    # Use plot_trisurf from mplot3d to plot surface and cm for color scheme
-    axs.plot_trisurf(strikes, dte_extended, imp_vol, cmap=cm.coolwarm)
-    # Change angle
-    axs.view_init(40, 65)
-    # Add labels
-    plt.xlabel("Strike")
-    plt.ylabel("Days to expire")
-    plt.title(f"Volatility Surface for {ticker} - Implied Volatility as a Function of K and T")
-    plt.show()
-    
-    
-plot_volatility_surface('AAPL')
-
+# Initiate figure
+fig = plt.figure(figsize=(7, 7))
+axs = plt.axes(projection="3d")
+axs.plot_trisurf(opt.MoneyNess, opt.T_days , opt.impliedVolatility, cmap=cm.coolwarm)
+axs.view_init(40, 65)
+plt.xlabel("Strike")
+plt.ylabel("Days to expire")
+plt.title(f"Volatility Surface for {type} {ticker} - Implied Volatility as a Function of K and T")
+plt.show()
 ```
-
 
 
 
  Black Implied Volatility CALL |  Black Implied Volatility PUT 
 :-------------------------:|:-------------------------:
-<img src="Images/CallSkew.png" width="400">  |  <img src="Images/PutSkew.png" width="400">
+<img src="Images/IV_CALL.png" width="400">  |  <img src="Images/IV_PUT.png" width="400">
 
 
 # **Local volatility vs implied Volatility**
