@@ -334,8 +334,11 @@ We can observe it for each type of option also
 
 # **Local volatility vs implied Volatility**
 
-
-Take slice
+Steps to calculate locaL VOLATILITY
+First, use the available quoted price to calculate the implied volatilities.
+Appy interpolation method to produce a smooth implied volatility surface.
+Plug implied volatilities into BSM model to get all the market prices of European calls.
+Calculate the local volatility according to Dupire formula. 
 
 
 

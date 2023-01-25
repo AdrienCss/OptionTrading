@@ -1,6 +1,10 @@
+import math
+
+import numpy as np
 
 from DataRequest import  y_finane_option_data , y_finane_stock_data
 from Volatility.ImpliedVolatiliy import compute_theorical_IV, plot_ImpliedVolatility , implied_volatility_Raphton
+
 import warnings
 warnings.simplefilter("ignore", category=FutureWarning)
 
@@ -27,7 +31,7 @@ for row in option_df.itertuples():
     price = compute_theorical_IV(row.mid_Price , row.underlying_LastPrice ,row.strike, row.T_days / 365, 0.06)
     IV.append(price)
 
-option_df['IV_Calculated'] = IV
+option_df['IV_Calculated_b'] = IV
 
 
 IV = []
@@ -35,7 +39,7 @@ for row in option_df.itertuples():
     price = implied_volatility_Raphton(row.mid_Price , row.underlying_LastPrice ,row.strike, row.T_days / 365, 0.06 )
     IV.append(price)
 
-option_df['IV_Calculated'] = IV
+option_df['IV_Calculated_n'] = IV
 
 
 
@@ -79,3 +83,30 @@ plt.xlabel("Strike")
 plt.ylabel("Days to expire")
 plt.title(f"Volatility Surface for OTM {ticker} - Implied Volatility as a Function of K and T")
 plt.show()
+
+
+## Computing Dupire Volality for call Option
+
+from BlackAndScholes import Greeks
+from Enum.OptionType import OpionType
+from Volatility.ImpliedVolatiliy import compute_theorical_IV, plot_ImpliedVolatility , implied_volatility_Raphton
+
+theta = []
+gamma = []
+
+opt =  option_df[(option_df.Type=='CALL')]
+opt =  opt[(opt.strike <= last_price+100)]
+opt =  opt[(opt.strike >= last_price-100)]
+opt['mid'] =( opt['bid'] + opt['ask']) / 2
+
+
+for row in opt.itertuples():
+    theta_ = Greeks.Theta(row.mid , row.strike , row.T_days/252 , 0.01 , row.IV_Calculated_b ,OpionType.CALL)
+    gamma_ = Greeks.Gamma(row.mid , row.strike , row.T_days/252 , 0.01 , row.IV_Calculated_b)
+    gamma.append(gamma_)
+    theta.append(theta_)
+
+opt['theta'] = theta
+opt['gamma'] = gamma
+
+opt['localVol'] = 1 / opt['strike'] * np.sqrt( 2 * opt['theta'] /opt['gamma'])
