@@ -161,9 +161,9 @@ The engine also allows you to profile greek strategies.
 Here are the results obtained for a call spread
 
 ```ruby
-T = 1 
-r= 0.015 # risk free rate
-vol = IV
+T = maturity /252
+r = 0.015
+vol = np.average(call_90_df['impliedVolatility'].values[0] + call_80_df['impliedVolatility'].values[0])
 
 strategy.compute_greek_profile(T ,r , vol)
 strategy.plotGreek(greekStr='gamma')
@@ -181,7 +181,7 @@ Vega profile             | Theta Profile
 
 # **Option Princing : Binomial & B&S**
 
--  [mainPricingModel.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainPricingModel.py)<=
+-  [mainPricingModel.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainPricingModel.py)
 
 The B&S model is based on the following assumptions:
 
@@ -194,10 +194,64 @@ The B&S model is based on the following assumptions:
 Under these assumptions, the Black-Scholes model provides a closed-form solution for the price of a European call or put option.
 
 The binomial model provides a multi-period view of the underlying asset price as well as the price of the option. In contrast to the Black-Scholes model, which provides a numerical result based on inputs, the binomial model allows for the calculation of the asset and the option for multiple periods along with the range of possible results for each period .
+ 
 
+```ruby
+
+#Binomial Method 
+
+def combos(n, i):
+    return math.factorial(n) / (math.factorial(n - i) * math.factorial(i))
+
+
+def binom_EU1(S0, K, T, r, sigma, N, type_='call'):
+    dt = T / N
+    u = np.exp(sigma * np.sqrt(dt))
+    d = np.exp(-sigma * np.sqrt(dt))
+    p = (np.exp(r * dt) - d) / (u - d)
+    value = 0
+    for i in range(N + 1):
+        node_prob = combos(N, i) * p ** i * (1 - p) ** (N - i)
+        ST = S0 * (u) ** i * (d) ** (N - i)
+        if type_ == 'CALL':
+            value += max(ST - K, 0) * node_prob
+        elif type_ == 'PUT':
+            value += max(K - ST, 0) * node_prob
+        else:
+            raise ValueError("type_ must be 'call' or 'put'")
+
+    return value * np.exp(-r * T)
+```
+
+
+
+```ruby
+
+#B&S Method
+def BS_CALL(S, K, T, r, sigma):
+    d1 = (np.log(S/K) + (r + sigma**2/2)*T) / (sigma*np.sqrt(T))
+    d2 = d1 - sigma * np.sqrt(T)
+    return S * N(d1) - K * np.exp(-r*T)* N(d2)
+
+
+def BS_PUT(S, K, T, r, sigma):
+    d1 = (np.log(S/K) + (r + sigma**2/2)*T) / (sigma*np.sqrt(T))
+    d2 = d1 - sigma* np.sqrt(T)
+    return K* np.exp(-r*T) * N(-d2) - S*N(-d1)
+
+
+def priceBS(S, K, T, r, sigma ,type='CALL'):
+    if type == 'CALL':
+        return BS_CALL(S, K, T, r, sigma)
+    if type == 'PUT':
+        return BS_PUT(S, K, T, r, sigma)
+    else:
+        raise ValueError('Unrecognized type')
+
+```
 
 # **Implied Volatility Calculation and Plotting for Options**
-- [mainImpliedVolatility.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainImpliedVolatility.py)<=
+- [mainImpliedVolatility.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainImpliedVolatility.py)
 
 - Ploting observed implied volatility of real option's quotes.
 - Computing implied volatility using Newton-Raphson Model.
@@ -278,7 +332,6 @@ We can observe it for each type of option also
 
 
 
-
 # **Local volatility vs implied Volatility**
 
 
@@ -288,6 +341,7 @@ Take slice
 
 # **Simulating heston Volatility**
 
+[mainHestonSimulation.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainHestonSimulation.py)
 The basic idea behind the Heston model is that the volatility of an asset's price is not constant over time, but rather follows a stochastic process. The model describes the dynamics of the asset's price and volatility using two state variables: the current price of the asset and its current volatility. The model then uses a set of parameters to describe how these state variables change over time.
 
 
@@ -355,8 +409,3 @@ Heston Volatility              | Price trajectories (Monte Carlo)
 
 
 
-source file =>  [mainHestonSimulation.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainHestonSimulation.py)<=
-
-# **Does the market follow a normal law?**
-
-source file =>  [mainReturnsAnalysis.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainReturnsAnalysis.py)<=

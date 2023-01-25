@@ -2,7 +2,7 @@ from  BinomialModel.BinomialPricing  import  binom_EU1
 from BlackAndScholes.BSPricing import priceBS
 from DataRequest import y_finane_option_data , y_finane_stock_data
 from Volatility.ImpliedVolatiliy import compute_theorical_IV
-import matplotlib as plt
+
 df = y_finane_option_data.get_option_data('TSLA')
 stockPrices_ = y_finane_stock_data.get_stock_price('TSLA')
 
@@ -15,6 +15,7 @@ for row in df.itertuples():
     prices_Bi.append(price)
 
 df['Binomial_Prices'] = prices_Bi
+df['mid_Price'] = (df['bid'] + df['ask']) /2
 
 prices_BS = []
 for row in df.itertuples():
@@ -23,7 +24,6 @@ for row in df.itertuples():
 
 
 df['Black_And_Scholes_Prices'] = prices_BS
-df['mid_Price'] = (df['bid'] + df['ask']) /2
 
 IV = []
 for row in df.itertuples():
