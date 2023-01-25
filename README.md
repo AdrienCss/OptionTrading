@@ -56,52 +56,48 @@ In the case of the following strategies we have taken real options that quote th
 Click here to see the code of the strategy Engine =>  [OptionStrategies.py](https://github.com/AdrienCss/OptionTrading/blob/main/Option/OptionStrategies.py)<=
 
 ```ruby
-# type of code to generate simple call spread strategy
-option_df = y_finane_option_data.get_option_data(ticker)
-stockPrices_ = y_finane_stock_data.get_stock_price(ticker)
-last_price = stockPrices_.tail(1)['Adj Close'].values[0]
 
-currentprice = last_price
+# We take the 5th closest maturity
+maturity =option_df['T_days'].unique()[5]
 
-#choosing random maturitie among all quotes
-maturities =option_df['T_days'].unique()
-random_maturity = np.random.choice(maturities)
-
-
-## options_df
-options_df = option_df[option_df['T_days'] ==random_maturity]
-
+options_df = option_df[option_df['T_days'] ==maturity]
 call_df = options_df[options_df['Type'] =='CALL']
 put_df = options_df[options_df['Type'] =='PUT']
 
-call_OTM = call_df.iloc[(call_df['strike']-(currentprice + 15)).abs().argsort()[:1]]
-call_ITM = call_df.iloc[(call_df['strike']-(currentprice - 15)).abs().argsort()[:1]]
+#Getting real Quotes options
+call_90_df = call_df.iloc[(call_df['strike']-(currentprice * 0.90)).abs().argsort()[:1]]
+call_80_df = call_df.iloc[(call_df['strike']-(currentprice * 0.80)).abs().argsort()[:1]]
 
-put_OTM = put_df.iloc[(put_df['strike']-(currentprice - 15)).abs().argsort()[:1]]
-put_ITM = put_df.iloc[(put_df['strike']-(currentprice + 15)).abs().argsort()[:1]]
-
-
-## creating initial options objects
-call_OTM = Option(price=call_OTM['lastPrice'].values[0], K=call_OTM['strike'].values[0] , type= OpionType.CALL)
-call_ITM = Option(price=call_ITM['lastPrice'].values[0], K=call_ITM['strike'].values[0] , type= OpionType.CALL)
-
-put_OTM = Option(price=put_OTM['lastPrice'].values[0], K=put_OTM['strike'].values[0] , type= OpionType.PUT)
-put_ITM = Option(price=put_ITM['lastPrice'].values[0], K=put_ITM['strike'].values[0] , type= OpionType.PUT)
-
-#stock = Stock(price = currentprice)
+put_90_df = put_df.iloc[(put_df['strike']-(currentprice * 0.90)).abs().argsort()[:1]]
+put_80_df = put_df.iloc[(put_df['strike']-(currentprice * 0.80)).abs().argsort()[:1]]
 
 
-# Creating call spead
-strategy = OptionStrategies(name = "Call spread (ITM / OTM)" ,St = currentprice)
-strategy.add_Option(option= call_OTM ,buySell= BuySellSide.SELL , option_number=1 )
-strategy.add_Option(option= call_ITM ,buySell= BuySellSide.BUY , option_number=1 )
+# Creating Call spread  80 / 90
+call90 = Option(price=call_90_df['lastPrice'].values[0], K=call_90_df['strike'].values[0] , type= OpionType.CALL)
+call80 = Option(price=call_80_df['lastPrice'].values[0], K=call_80_df['strike'].values[0] , type= OpionType.CALL)
+
+
+strategy = OptionStrategies(name = "Call spread 90/80" ,St = currentprice)
+strategy.add_Option(option= call90 ,buySell= BuySellSide.SELL , option_number=1 )
+strategy.add_Option(option= call80 ,buySell= BuySellSide.BUY , option_number=1 )
+strategy.plot()
+
+
+# Creating put spread  80 / 90
+put90 = Option(price=put_90_df['lastPrice'].values[0], K=put_90_df['strike'].values[0] , type= OpionType.PUT)
+put80 = Option(price=put_80_df['lastPrice'].values[0], K=put_80_df['strike'].values[0] , type= OpionType.PUT)
+
+
+strategy = OptionStrategies(name = "PUT Spread 90/ 80" ,St = currentprice)
+strategy.add_Option(option= put90 ,buySell= BuySellSide.BUY , option_number=1 )
+strategy.add_Option(option= put80,buySell= BuySellSide.SELL , option_number=1 )
 strategy.plot()
 ```
 
 
-Put Spread Payoff             | Call Spread Payoff
+Put Spread Payoff 80%/90%            | Call Spread Payoff 80%/90%
 :-------------------------:|:-------------------------:
-<img src="Images/putSpread.png" width="400">  |  <img src="Images/callSpread.png" width="400">
+<img src="Images/putSpread8090.png" width="400">  |  <img src="Images/callSpread.png" width="400">
 
 
 
@@ -114,9 +110,9 @@ Straddle Payoff             | Strangle Payoff
 <img src="Images/straddle.png" width="400">  |  <img src="Images/strangle.png" width="400">
 
 
-Butterflies             | Strangle Payoff
+Long Butterfly spread           | Short Butterfly spread
 :-------------------------:|:-------------------------:
-<img src="Images/straddle.png" width="400">  |  <img src="Images/strangle.png" width="400">
+<img src="Images/LongButterfly.png" width="400">  |  <img src="Images/ShortButterFly.png" width="400">
 
 
 
@@ -201,12 +197,12 @@ The binomial model provides a multi-period view of the underlying asset price as
 
 
 # **Implied Volatility Calculation and Plotting for Options**
+- [mainImpliedVolatility.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainImpliedVolatility.py)<=
 
 - Ploting observed implied volatility of real option's quotes.
 - Computing implied volatility using Newton-Raphson Model.
 - ploting skew/smile on short and long maturites ( short/long Smile)
 
-source file =>  [mainImpliedVolatility.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainImpliedVolatility.py)<=
 
 
 We can observe implied ( black) volatility Skew at different maturites ( long/short smile)
@@ -268,12 +264,19 @@ plt.ylabel("Days to expire")
 plt.title(f"Volatility Surface for {type} {ticker} - Implied Volatility as a Function of K and T")
 plt.show()
 ```
+ Black Implied Volatility OTM |  -
+:-------------------------:|:-------------------------:
+<img src="Images/OTM_IV.png" width="400">  |  -
 
 
+We can observe it for each type of option also
 
  Black Implied Volatility CALL |  Black Implied Volatility PUT 
 :-------------------------:|:-------------------------:
 <img src="Images/IV_CALL.png" width="400">  |  <img src="Images/IV_PUT.png" width="400">
+
+
+
 
 
 # **Local volatility vs implied Volatility**

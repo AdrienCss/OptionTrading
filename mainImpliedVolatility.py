@@ -62,8 +62,8 @@ stockPrices_ = y_finane_stock_data.get_stock_price(ticker)
 last_price = stockPrices_.tail(1)['Adj Close'].values[0]
 option_df['underlying_LastPrice'] = last_price
 
-type = 'CALL'
-opt =  option_df[(option_df.Type==type)]
+
+opt =  option_df[(option_df.inTheMoney==False)]
 opt =  opt[(opt.strike <= last_price+100)]
 opt =  opt[(opt.strike >= last_price-100)]
 opt =  opt[(opt.T_days <=200)]
@@ -73,9 +73,9 @@ opt = opt[['strike' , 'T_days','impliedVolatility']]
 # Initiate figure
 fig = plt.figure(figsize=(7, 7))
 axs = plt.axes(projection="3d")
-axs.plot_trisurf(opt.MoneyNess, opt.T_days , opt.impliedVolatility, cmap=cm.coolwarm)
+axs.plot_trisurf(opt.strike, opt.T_days , opt.impliedVolatility, cmap=cm.coolwarm)
 axs.view_init(40, 65)
 plt.xlabel("Strike")
 plt.ylabel("Days to expire")
-plt.title(f"Volatility Surface for {type} {ticker} - Implied Volatility as a Function of K and T")
+plt.title(f"Volatility Surface for OTM {ticker} - Implied Volatility as a Function of K and T")
 plt.show()

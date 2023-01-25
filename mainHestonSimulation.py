@@ -53,8 +53,8 @@ T = 1.0                # time in years intil maturity , let's say 1year
 kappa = 3          #rate of mean reversion of variance under risk-neutral dynamics
 theta = timeSeries['realised_volatility_6M'].mean() **2  # long-term mean of variance under risk-neutral dynamics
 v0 = timeSeries['realised_volatility_6M'].tail(1).values[0] **2   # # initial variance under risk-neutral dynamics
-rho =  0.055604   # correlation between returns and variances under risk-neutral dynamics
-sigma = 0.6    # volatility of volatility
+rho =  0.055604
+sigma = 0.6
 
 
 s_sim , vol_sim =  heston_model_sim(S0, v0, rho, kappa, theta, sigma, T, r,10)
@@ -87,29 +87,4 @@ vol_sim.plot()
 plt.ylabel('Volatility')
 plt.title('Heston Stochatic Vol Simulation')
 plt.show()
-
-
-
-strikes =np.arange(currentPrice - 100, currentPrice  + 100,1)
-
-calls = []
-test_s = s_sim[:,-1]
-
-
-for K in strikes:
-    C = np.mean(np.maximum(K-test_s,0))*np.exp(-r*T)
-    calls.append(C)
-
-
-ivs = [compute_theorical_IV(C, currentPrice, K, T, r,type_='CALL') for C, K in zip(calls,strikes)]
-
-plt.plot(strikes, ivs)
-plt.ylabel('Implied Volatility')
-plt.xlabel('Strike')
-plt.axvline(currentPrice, color='black',linestyle='--',label='Spot Price')
-plt.title('Implied Volatility Smile from Heston Model')
-plt.legend()
-plt.show()
-
-
 
