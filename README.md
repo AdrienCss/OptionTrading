@@ -250,6 +250,69 @@ def priceBS(S, K, T, r, sigma ,type='CALL'):
 
 ```
 
+
+Volatility and time are two important factors that can significantly impact the price of a call option.
+
+-The higher the Implied volatility, the greater the likelihood that the option will expire in-the-money, and thus the higher the price of the call option. This is because with high volatility, there is a greater chance that the underlying asset's price will move above the strike price, making the option profitable.
+
+-Time, also known as time decay, is another important factor that can impact the price of a call option. As the expiration date of the option approaches, the option's value decreases. This is because there is less time for the underlying asset's price to move above the strike price and for the option to become profitable. The closer the expiration date, the greater the time decay, and the lower the price of the call option.
+
+
+Here is an example of how to observe the impact of volatility and Time on the price of an option:
+
+
+
+
+```ruby
+#static Parameters
+import numpy as np
+from BlackAndScholes.BSPricing import BS_CALL ,BS_PUT
+import matplotlib.pyplot as plt
+
+K = 100
+r = 0.1
+sig = 0.2
+St =  stockPrices_['Adj Close'].tail(1).values[0]
+
+S = np.arange(0 ,St + 60,1)
+
+#Using != Time
+callsPrice2 = [BS_CALL(s, K, 3, r, sig) for s in S]
+callsPrice3 = [BS_CALL(s, K,2, r, sig) for s in S]
+callsPrice4 = [BS_CALL(s, K, 1, r, sig) for s in S]
+callsPrice5 = [BS_CALL(s, K, 0.50, r,sig) for s in S]
+
+IntrinsicValue = [max(s - K ,0)for s in S]
+
+plt.plot(S, callsPrice2, label='Call Value T = 3')
+plt.plot(S, callsPrice3, label='Call Value T = 2')
+plt.plot(S, callsPrice4, label='Call Value T = 1')
+plt.plot(S, callsPrice5, label='Call Value T = 0.5')
+plt.plot(S, IntrinsicValue, label='IntrinsicValue')
+plt.xlabel('$S_t$')
+plt.ylabel(' Value')
+plt.title('Time impact on call value')
+plt.legend()
+plt.show()
+
+
+#Using != volatilities
+T= 1
+callsPrice2 = [BS_CALL(s, K, T, r, 0.2) for s in S]
+callsPrice3 = [BS_CALL(s, K, T, r, 0.3) for s in S]
+callsPrice4 = [BS_CALL(s, K, T, r, 0.4) for s in S]
+callsPrice5 = [BS_CALL(s, K, T, r, 0.5) for s in S]
+
+
+```
+
+
+Implied Volatility            | Time
+:-------------------------:|:-------------------------:
+<img src="Images/IVImpactCallValue.png" width="400">  |  <img src="Images/TimeImpact.png" width="400">
+
+
+
 # **Implied Volatility Calculation and Plotting for Options**
 - [mainImpliedVolatility.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainImpliedVolatility.py)
 

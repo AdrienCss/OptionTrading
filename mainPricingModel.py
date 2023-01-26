@@ -55,3 +55,74 @@ plt.xlabel('Strike')
 plt.ylabel('Implied Volatility Values')
 plt.legend()
 plt.show()
+
+
+#static Parameters
+import numpy as np
+
+K = 100
+r = 0.1
+T = 1
+St =  stockPrices_['Adj Close'].tail(1).values[0]
+
+from BlackAndScholes.BSPricing import BS_CALL ,BS_PUT
+import matplotlib.pyplot as plt
+
+S = np.arange(0 ,St + 60,1)
+
+#Using != volatility
+callsPrice2 = [BS_CALL(s, K, T, r, 0.2) for s in S]
+callsPrice3 = [BS_CALL(s, K, T, r, 0.3) for s in S]
+callsPrice4 = [BS_CALL(s, K, T, r, 0.4) for s in S]
+callsPrice5 = [BS_CALL(s, K, T, r, 0.5) for s in S]
+
+IntrinsicValue = [max(s - K ,0)for s in S]
+
+plt.plot(S, callsPrice2, label='Call Value sig = 0.20')
+plt.plot(S, callsPrice3, label='Call Value sig = 0.30')
+plt.plot(S, callsPrice4, label='Call Value sig = 0.40')
+plt.plot(S, callsPrice5, label='Call Value sig = 0.50')
+plt.plot(S, IntrinsicValue, label='IntrinsicValue')
+plt.xlabel('$S_t$')
+plt.ylabel(' Value')
+plt.title('Implied volatility impact on call value')
+plt.legend()
+plt.show()
+
+
+
+
+#static Parameters
+import numpy as np
+
+K = 100
+r = 0.1
+T = 1
+sig = 0.2
+St =  stockPrices_['Adj Close'].tail(1).values[0]
+
+from BlackAndScholes.BSPricing import BS_CALL ,BS_PUT
+import matplotlib.pyplot as plt
+
+S = np.arange(0 ,St + 60,1)
+
+#Using != volatility
+callsPrice2 = [BS_CALL(s, K, 3, r, sig) for s in S]
+callsPrice3 = [BS_CALL(s, K,2, r, sig) for s in S]
+callsPrice4 = [BS_CALL(s, K, 1, r, sig) for s in S]
+callsPrice5 = [BS_CALL(s, K, 0.50, r,sig) for s in S]
+
+IntrinsicValue = [max(s - K ,0)for s in S]
+
+plt.plot(S, callsPrice2, label='Call Value T = 3')
+plt.plot(S, callsPrice3, label='Call Value T = 2')
+plt.plot(S, callsPrice4, label='Call Value T = 1')
+plt.plot(S, callsPrice5, label='Call Value T = 0.5')
+plt.plot(S, IntrinsicValue, label='IntrinsicValue')
+plt.xlabel('$S_t$')
+plt.ylabel(' Value')
+plt.title('Time impact on call value')
+plt.legend()
+plt.show()
+
+

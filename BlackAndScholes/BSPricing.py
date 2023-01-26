@@ -23,3 +23,5 @@ def priceBS(S, K, T, r, sigma ,type='CALL'):
         return BS_PUT(S, K, T, r, sigma)
     else:
         raise ValueError('Unrecognized type')
+
+
