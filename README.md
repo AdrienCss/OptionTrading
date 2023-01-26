@@ -405,14 +405,14 @@ To demonstrate :
 
 Local Volatility |   Def
 :-------------------------:|:-------------------------:
-<img src="Images/IV_vs_LV.png" width="400">  |  Local volatility varies with
-market level about twice as rapidly as implied volatility varies with strike.
+<img src="Images/IV_vs_LV.png" width="400">  |  Local volatility varies with market level about twice as rapidly as implied volatility varies with strike.
 
 
 
 # **Simulating heston Volatility**
 
-[mainHestonSimulation.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainHestonSimulation.py)
+-[mainHestonSimulation.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainHestonSimulation.py)
+
 The basic idea behind the Heston model is that the volatility of an asset's price is not constant over time, but rather follows a stochastic process. The model describes the dynamics of the asset's price and volatility using two state variables: the current price of the asset and its current volatility. The model then uses a set of parameters to describe how these state variables change over time.
 
 
@@ -472,6 +472,8 @@ The kurtosis of 5.08 indicates that the distribution of the data is higher than 
 In the case of the rolling volatility graph of TESLA stock returns, we can observe how the variability of returns changes over time. The average return to variance is 0.30.
 
 
+
+Result :
 
 Heston Volatility              | Price trajectories (Monte Carlo)
 :-------------------------:|:-------------------------:
