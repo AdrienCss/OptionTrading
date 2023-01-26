@@ -257,11 +257,7 @@ Volatility and time are two important factors that can significantly impact the 
 
 -Time, also known as time decay, is another important factor that can impact the price of a call option. As the expiration date of the option approaches, the option's value decreases. This is because there is less time for the underlying asset's price to move above the strike price and for the option to become profitable. The closer the expiration date, the greater the time decay, and the lower the price of the call option.
 
-
 Here is an example of how to observe the impact of volatility and Time on the price of an option:
-
-
-
 
 ```ruby
 #static Parameters
@@ -397,11 +393,20 @@ We can observe it for each type of option also
 
 # **Local volatility vs implied Volatility**
 
-Steps to calculate locaL VOLATILITY
-First, use the available quoted price to calculate the implied volatilities.
-Appy interpolation method to produce a smooth implied volatility surface.
-Plug implied volatilities into BSM model to get all the market prices of European calls.
-Calculate the local volatility according to Dupire formula. 
+Steps to calculate locaL VOLATILITY 
+-First, use the available quoted price to calculate the implied volatilities.
+-Appy interpolation method to produce a smooth implied volatility surface.
+-Plug implied volatilities into BSM model to get all the market prices of European calls.
+-Calculate the local volatility according to Dupire formula. 
+
+
+
+To demonstrate : 
+
+Local Volatility |   Def
+:-------------------------:|:-------------------------:
+<img src="Images/IV_vs_LV.png" width="400">  |  Local volatility varies with
+market level about twice as rapidly as implied volatility varies with strike.
 
 
 
