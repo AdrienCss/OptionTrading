@@ -1,45 +1,37 @@
+from BlackAndScholes import BSPricing
 import numpy as np
-from pyblackscholes import black_scholes
-import pyblp
 
-def dupire_matrix(option_prices, spot, rf, div, expiries, strikes):
-    """
-    Calcule la matrice de volatilité implicite avec la méthode de Dupire
-    à partir des prix des options.
 
-    option_prices : numpy array
-        un tableau numpy contenant les prix des options
-    spot : float
-        le prix actuel de l'actif sous-jacent
-    rf : float
-        le taux d'intérêt sans risque
-    div : float
-        le taux de dividende
-    expiries : numpy array
-        un tableau numpy contenant les échéances des options
-    strikes : numpy array
-        un tableau numpy contenant les strikes des options
-    """
-    n_strikes = len(strikes)
-    n_expiries = len(expiries)
-    impl_vols = np.zeros((n_expiries, n_strikes))
-    for i in range(n_expiries):
-        for j in range(n_strikes):
-            t = expiries[i]
-            k = strikes[j]
-            # Calculer la volatilité implicite pour chaque option
-            price = option_prices[i, j]
-            call = 1
-            try:
-                impl_vol = black_scholes.implied_volatility(price, spot, k, t, rf, div, call)
-                impl_vols[i, j] = impl_vol
-            except Exception as e:
-                pass
-    # Construire la matrice de volatilité implicite
-    mat_dupire = np.zeros((n_expiries, n_strikes))
-    for i in range(n_expiries):
-        for j in range(n_strikes):
-            t = expiries[i]
-            k = strikes[j]
-            mat_dupire[i, j] = (2 * rf) / (k ** 2 * t) * impl_vols[i, j]
-    return mat_dupire
+from scipy.stats import norm
+
+N_prime = norm.pdf
+
+
+def ComputeDupireVolatility(S , K , r , T , sigma , type , increment = 1.5):
+
+    BSp = BSPricing.priceBS
+
+    delta_T_finite = (BSp(S=S , K=K , r=r, T=(T + increment), type=type, sigma=sigma)  - BSp(S=S, K=K , r=r, T=T, type=type, sigma=sigma)) / (increment)
+
+    delta_K_finite = (BSp(S=S , K=K  + increment, r=r, T=T, type=type, sigma=sigma) - BSp(S=S, K=K , r=r, T=T, type=type, sigma=sigma)) / (increment)
+
+    delta_2K_finite = (BSp(S=S , K=K  + increment, r=r, T=T, type=type, sigma=sigma) - 2 * BSp(S=S, K=K , r=r, T=T, type=type, sigma=sigma)
+                   + BSp(S=S , K= K  - increment, r=r, T=T, type=type, sigma=sigma)) / (increment)
+
+    local_volatility = np.sqrt( (delta_T_finite + 0.0066 * K  * delta_K_finite) / (0.5 * K  * K  * delta_2K_finite))
+
+    return local_volatility
+
+
+
+##Check
+
+S=770.05
+K = 850
+sigma = 0.194722
+T =0.07
+increment = 1.5
+
+r = 0.0066
+
+localIV = ComputeDupireVolatility(S, K,r,T,sigma , 'CALL',increment)

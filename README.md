@@ -393,6 +393,7 @@ We can observe it for each type of option also
 
 # **Local volatility vs implied Volatility**
 
+
 Steps to calculate locaL VOLATILITY 
 -First, use the available quoted price to calculate the implied volatilities.
 -Appy interpolation method to produce a smooth implied volatility surface.
@@ -401,11 +402,16 @@ Steps to calculate locaL VOLATILITY
 
 
 
-To demonstrate : 
+Local volatility surface :
+<img src="Images/localVolatility.png" width="400">  
+
+
+
+Local volatility vs Implied volatility observation
 
 Local Volatility |   Def
 :-------------------------:|:-------------------------:
-<img src="Images/IV_vs_LV.png" width="400">  |  Local volatility varies with market level about twice as rapidly as implied volatility varies with strike.
+<img src="Images/DupireVolVsBlack.png" width="400">  |  Local volatility varies with market level about twice as rapidly as implied volatility varies with strike.
 
 
 

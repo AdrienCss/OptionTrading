@@ -87,26 +87,34 @@ plt.show()
 
 ## Computing Dupire Volality for call Option
 
-from BlackAndScholes import Greeks
-from Enum.OptionType import OpionType
-from Volatility.ImpliedVolatiliy import compute_theorical_IV, plot_ImpliedVolatility , implied_volatility_Raphton
+from Volatility.DupireVolatility import ComputeDupireVolatility
+from matplotlib import cm
+## Get Option/underlying stock Prices
+option_df = y_finane_option_data.get_option_data(ticker)
+stockPrices_ = y_finane_stock_data.get_stock_price(ticker)
+last_price = stockPrices_.tail(1)['Adj Close'].values[0]
+option_df['underlying_LastPrice'] = last_price
 
-theta = []
-gamma = []
 
+Local_DupireIV = []
+for row in option_df.itertuples():
+    localIV = ComputeDupireVolatility(row.underlying_LastPrice , row.strike  , 0.0015 ,  row.T_days / 252,row.impliedVolatility ,row.Type,1.5)
+    Local_DupireIV.append(localIV)
+
+option_df['Local_DupireIV'] = Local_DupireIV
+
+matu = np.unique(option_df.T_days)[6]
 opt =  option_df[(option_df.Type=='CALL')]
-opt =  opt[(opt.strike <= last_price+100)]
-opt =  opt[(opt.strike >= last_price-100)]
-opt['mid'] =( opt['bid'] + opt['ask']) / 2
+opt = opt[(opt.T_days ==81)]
+opt =  opt[(opt.strike <= last_price+10)]
 
+import matplotlib.pyplot as plt
 
-for row in opt.itertuples():
-    theta_ = Greeks.Theta(row.mid , row.strike , row.T_days/252 , 0.01 , row.IV_Calculated_b ,OpionType.CALL)
-    gamma_ = Greeks.Gamma(row.mid , row.strike , row.T_days/252 , 0.01 , row.IV_Calculated_b)
-    gamma.append(gamma_)
-    theta.append(theta_)
+plt.plot(opt.strike, opt.impliedVolatility, label='Black Implied volatility')
+plt.plot(opt.strike, opt.Local_DupireIV, label='Local volatility Dupire')
 
-opt['theta'] = theta
-opt['gamma'] = gamma
-
-opt['localVol'] = 1 / opt['strike'] * np.sqrt( 2 * opt['theta'] /opt['gamma'])
+plt.xlabel('Strike')
+plt.ylabel('volatility')
+plt.title(f'Black IV vs Dupire IV for OTM {ticker}, T( days) ={matu} ')
+plt.legend()
+plt.show()
