@@ -5,8 +5,8 @@ Designed for educational purposes. Here are some of the key topics:
 
 - **Data request** : Recovery of Option & stock financial data via the yFinance API
 - **Option Trading Strategies**: We'll explore various strategies for trading options, including both traditional and more exotics techniques.
-- **Black & Scholes Pricing Model**: Implementation of the theoretical foundations of the Black & Scholes model: A comparison with the binomial model.
-- **Implied Volatility Surface / Local Volatility**: Recovery and calculation of implied volatilities quoted on the market. Observing the long and short term skew/smile
+- **Black & Scholes Pricing Model**: Implementation of the theoretical foundations of the Black & Scholes model:Observation of the parameters affecting the value of an option.
+- **Implied Volatility Surface / Local Volatility**: Recovery and calculation of implied volatilities quoted on the market. Observing the long and short term skew/smile.Calculation of local volatility with the Dupire formula.
 - **Stochastic Volatility**: We'll explore the concept of stochastic volatility with Heston Model
 - **Greeks**: We'll cover the key "Greeks" (Delta, Gamma, Theta, Vega, Rho) and their profiles with different options strategies.
 
