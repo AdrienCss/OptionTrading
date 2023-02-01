@@ -18,7 +18,7 @@ def ComputeDupireVolatility(S , K , r , T , sigma , type , increment = 1.5):
     delta_2K_finite = (BSp(S=S , K=K  + increment, r=r, T=T, type=type, sigma=sigma) - 2 * BSp(S=S, K=K , r=r, T=T, type=type, sigma=sigma)
                    + BSp(S=S , K= K  - increment, r=r, T=T, type=type, sigma=sigma)) / (increment)
 
-    local_volatility = np.sqrt( (delta_T_finite + 0.0066 * K  * delta_K_finite) / (0.5 * K  * K  * delta_2K_finite))
+    local_volatility = np.sqrt( (delta_T_finite + r * K  * delta_K_finite) / (0.5 * K  * K  * delta_2K_finite))
 
     return local_volatility
 
