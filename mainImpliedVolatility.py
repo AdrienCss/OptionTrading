@@ -72,7 +72,7 @@ plt.show()
 
 ## Computing Dupire Volality for call Option
 
-from Volatility.DupireVolatility import ComputeDupireVolatility
+from Volatility.DupireVolatility import ComputeDupireVolatility,ComputeDupireVolatilityQC
 
 
 Local_DupireIV = []
@@ -83,6 +83,13 @@ for row in option_df.itertuples():
 option_df['Local_DupireIV'] = Local_DupireIV
 
 
+Local_DupireIVQC = []
+for row in option_df.itertuples():
+    localIV = ComputeDupireVolatilityQC(row.underlying_LastPrice , row.strike  , 0.0015 ,  row.T_days / 252,row.IV_Calculated_b ,row.Type,1.5)
+    Local_DupireIVQC.append(localIV)
+
+option_df['Local_DupireQC'] = Local_DupireIVQC
+
 matu = np.unique(option_df.T_days)
 
 for m in matu:
@@ -92,6 +99,7 @@ for m in matu:
 
     plt.plot(opt.strike, opt.impliedVolatility, label='Black Implied volatility')
     plt.plot(opt.strike, opt.Local_DupireIV, label='Local volatility Dupire')
+
     plt.xlabel('Strike')
     plt.ylabel('volatility')
     plt.title(f'Black IV vs Dupire LV , T( days) ={m} ')
