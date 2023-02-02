@@ -200,7 +200,7 @@ Now let's calculate the corresponding prices of calls and puts to see if arbitra
 
 Call              | Put
 :-------------------------:|:-------------------------:
-<img src="Images/calls_CP.png" width="400">  |  <img src="Put_CP.png" width="400">
+<img src="Images/calls_CP.png" width="400">  |  <img src="Images/Put_CP.png" width="400">
 
 
 In both cases the two curves are not distinctly observable!
