@@ -52,22 +52,24 @@ for matu in option_df.T_days.unique():
 
 ## Get Option/underlying stock Prices
 
-opt =  option_df[(option_df.inTheMoney==False)]
-opt =  opt[(opt.strike <= last_price+100)]
-opt =  opt[(opt.strike >= last_price-100)]
-opt =  opt[(opt.T_days <=200)]
-opt['MoneyNess'] = opt['underlying_LastPrice'] / opt['strike']
-opt = opt[['strike' , 'T_days','impliedVolatility']]
+plotSurface = False
 
-# Initiate figure
-fig = plt.figure(figsize=(7, 7))
-axs = plt.axes(projection="3d")
-axs.plot_trisurf(opt.strike, opt.T_days , opt.impliedVolatility, cmap=cm.coolwarm)
-axs.view_init(40, 65)
-plt.xlabel("Strike")
-plt.ylabel("Days to expire")
-plt.title(f"Volatility Surface for OTM {ticker} - Implied Volatility as a Function of K and T")
-plt.show()
+if plotSurface is True:
+    opt =  option_df[(option_df.inTheMoney==False)]
+    opt =  opt[(opt.strike <= last_price+100)]
+    opt =  opt[(opt.strike >= last_price-100)]
+    opt =  opt[(opt.T_days <=200)]
+    opt = opt[['strike' , 'T_days','impliedVolatility']]
+
+    # Initiate figure
+    fig = plt.figure(figsize=(7, 7))
+    axs = plt.axes(projection="3d")
+    axs.plot_trisurf(opt.strike, opt.T_days , opt.impliedVolatility, cmap=cm.coolwarm)
+    axs.view_init(40, 65)
+    plt.xlabel("Strike")
+    plt.ylabel("Days to expire")
+    plt.title(f"Volatility Surface for OTM {ticker} - Implied Volatility as a Function of K and T")
+    plt.show()
 
 
 ## Computing Dupire Volality for call Option
@@ -83,12 +85,14 @@ for row in option_df.itertuples():
 option_df['Local_DupireIV'] = Local_DupireIV
 
 
-Local_DupireIVQC = []
-for row in option_df.itertuples():
-    localIV = ComputeDupireVolatilityQC(row.underlying_LastPrice , row.strike  , 0.0015 ,  row.T_days / 252,row.IV_Calculated_b ,row.Type,1.5)
-    Local_DupireIVQC.append(localIV)
+#Other formula of Dupire Volatility
 
-option_df['Local_DupireQC'] = Local_DupireIVQC
+#Local_DupireIVQC = []
+#for row in option_df.itertuples():
+#   localIV = ComputeDupireVolatilityQC(row.underlying_LastPrice , row.strike  , 0.0015 ,  row.T_days / 252,row.IV_Calculated_b ,row.Type,1.5)
+#   Local_DupireIVQC.append(localIV)
+
+#option_df['Local_DupireQC'] = Local_DupireIVQC
 
 matu = np.unique(option_df.T_days)
 

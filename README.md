@@ -178,6 +178,33 @@ Delta profile             | Gamma Profile
 Vega profile             | Theta Profile
 <img src="Images/Vega.png" width="400">  |  <img src="Images/Theta.png" width="400">
 
+# **Call/ Put Parity**
+
+- [mainCallPutParity.py](https://github.com/AdrienCss/OptionTrading/blob/main/mainPricingModel.py)
+- 
+Call-Put Parity is a concept  that refers to the relationship between call options and put options on the same underlying asset. 
+The relationship is given by the following formula:
+
+$$
+ C +K*\exp(-rT) = S_0  + P
+$$
+
+Through this simple relationship we will see if there are arbitrage opportunities in the market.
+First, let's observe for a chosen maturity the call and put prices on the market for a strike range
+
+<img src="Images/MktPriceCP.png" width="400"> 
+As we can see, the market prices seem to resemble classic option prices, without any particular problem. 
+
+Now let's calculate the corresponding prices of calls and puts to see if arbitrage opportunities can exist..
+
+
+Call              | Put
+:-------------------------:|:-------------------------:
+<img src="Images/calls_CP.png" width="400">  |  <img src="Put_CP.png" width="400">
+
+
+In both cases the two curves are not distinctly observable!
+This proves that the market is totally efficient and that arbitrage opportunities do not exist on these options
 
 # **Option Princing : Binomial & B&S**
 
